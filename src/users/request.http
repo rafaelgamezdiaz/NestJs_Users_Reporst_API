@@ -1,0 +1,74 @@
+
+### Register a New User
+POST http://localhost:3000/users/auth/signup
+content-type: application/json
+
+{
+  "email": "userz@gmail.com",
+  "password": "pc12345"
+}
+
+
+### Login User
+POST http://localhost:3000/users/auth/login
+content-type: application/json
+
+{
+  "email": "usery@gmail.com",
+  "password": "pc12345"
+}
+
+
+
+### Who I am
+GET http://localhost:3000/users/whoAmI
+content-type: application/json
+
+
+
+### Logout User
+POST http://localhost:3000/users/auth/logout
+content-type: application/json
+
+
+
+
+### Find User by ID
+GET http://localhost:3000/users/find/5
+content-type: application/json
+
+
+### Find User by Email
+GET http://localhost:3000/users/find/email?email=ragadi1@gmail.com
+content-type: application/json
+
+
+### Find All Users
+GET http://localhost:3000/users/all/find
+content-type: application/json
+
+
+### Delete User
+DELETE http://localhost:3000/users/delete/1
+content-type: application/json
+
+
+### Update User
+PATCH http://localhost:3000/users/update/5
+content-type: application/json
+
+{
+  "email": "modificado@new.com",
+  "password": "x1x1x1"
+}
+
+
+
+### Set Color
+GET http://localhost:3000/users/colors/orange
+content-type: application/json
+
+
+### GET Color
+GET http://localhost:3000/users/colors
+content-type: application/json
