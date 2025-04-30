@@ -1,13 +1,20 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, Query, Session, UnauthorizedException } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, Query, Session, UseGuards, UseInterceptors } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create.user.dto';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dtos/update.user.dto';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { UserDto } from './dtos/user.dto';
 import { AuthService } from './auth.service';
+import { CurrentUser } from './decorators/curret-user.decorator';
+import { User } from './users.entity';
+import { AuthGuard } from 'src/guards/auth.guard';
+// import { CurrentUserInterceptor } from './interceptors/current-user.interceptor'; // Ver la nota de abajo en el UseInterceptor
+
 
 @Controller('users')
 @Serialize(UserDto)
+// @UseInterceptors(CurrentUserInterceptor) // Aplicando el interceptor de manera Local, actualmente no lo utilizo porque se aplico en el modulo UserModule de manera global a toda la aplicación,
+// pero dejo esta nota aquí porque es posible que en algunos casos deseemos aplicar un enfoque local
 export class UsersController {
 
     constructor(
@@ -17,12 +24,18 @@ export class UsersController {
 
 
 
+    // @Get('/whoAmI')
+    // whoAmI(@Session() session: any) {
+    //     if (!session.userId || isNaN(session.userId)) {
+    //         throw new UnauthorizedException('User not authenticated');
+    //     }
+    //     return this.userService.findOne(session.userId);
+    // }
+
     @Get('/whoAmI')
-    whoAmI(@Session() session: any) {
-        if (!session.userId || isNaN(session.userId)) {
-            throw new UnauthorizedException('User not authenticated');
-        }
-        return this.userService.findOne(session.userId);
+    @UseGuards(AuthGuard)
+    whoAmI(@CurrentUser() user: User) {
+        return user;
     }
 
 
