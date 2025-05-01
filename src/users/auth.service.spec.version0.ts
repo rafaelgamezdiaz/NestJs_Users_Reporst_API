@@ -16,17 +16,9 @@ describe('AuthService', () => {
 
     beforeEach(async () => {
         // Create a fake copy of UserService
-        const users: User[] = [];
         fakeUserService = {
-            findByEmail: (email: string) => {
-                const filteredUsers = users.filter(user => user.email === email);
-                return Promise.resolve(filteredUsers[0]);
-            },
-            create: (email: string, password: string) => {
-                const user = { id: Math.floor(Math.random() * 99999), email, password } as User;
-                users.push(user);
-                return Promise.resolve(user);
-            },
+            findByEmail: (email: string) => Promise.resolve(null),
+            create: (email: string, password: string) => Promise.resolve({ id: 1, email, password } as User),
         }
 
         const module = await Test.createTestingModule({
@@ -57,15 +49,9 @@ describe('AuthService', () => {
     });
 
     it('throws an error if user signs up with email that is in use', async () => {
-
-        // fakeUserService.findByEmail = (email: string) =>
-        //     Promise.resolve({ id: 1, email, password: '1' } as User);
-
-        // Register a user with an email
-        await service.signup('testemail@mail.com', 'd23v3343v134');
-
-        // Attempt to register again with the same email
-        await expect(service.signup('testemail@mail.com', 'd23v3343v134')).rejects.toThrow(
+        fakeUserService.findByEmail = (email: string) =>
+            Promise.resolve({ id: 1, email, password: '1' } as User);
+        await expect(service.signup('a', 'asdf')).rejects.toThrow(
             BadRequestException,
         );
     });
@@ -79,27 +65,34 @@ describe('AuthService', () => {
 
     it('verify salt and password', async () => {
 
-        // Register a user with an email and password
-        await service.signup('test@mail.com', 'mypassword');
+        const password = 'mypassword';
+        // Generate a salt
+        const salt = randomBytes(8).toString('hex');
+        const hash = (await scrypt(password, salt, 32)) as Buffer;
+        const hashedPassWithSalt = salt + '.' + hash.toString('hex');
 
-        // const password = 'mypassword';
-        // // Generate a salt
-        // const salt = randomBytes(8).toString('hex');
-        // const hash = (await scrypt(password, salt, 32)) as Buffer;
-        // const hashedPassWithSalt = salt + '.' + hash.toString('hex');
+        fakeUserService.findByEmail = (email: string) =>
+            Promise.resolve({ id: 1, email: 'test@mail.com', password: hashedPassWithSalt } as User);
 
-        // fakeUserService.findByEmail = (email: string) =>
-        //     Promise.resolve({ id: 1, email: 'test@mail.com', password: hashedPassWithSalt } as User);
-
-        // Attempt to sign in with the correct password
-        await expect(service.signin('test@mail.com', 'mypassword123123')).rejects.toThrow(
+        await expect(service.signin('test@mail.com', 'mypasswordw')).rejects.toThrow(
             BadRequestException);
     });
 
     it('returns a user if correct password is provided', async () => {
-        await service.signup('test@mail.com', 'mypassword');
+        const password = 'mypassword';
+        // Generate a salt
+        const salt = randomBytes(8).toString('hex');
+        const hash = (await scrypt(password, salt, 32)) as Buffer;
+        const hashedPassWithSalt = salt + '.' + hash.toString('hex');
+
+        fakeUserService.findByEmail = (email: string) =>
+            Promise.resolve({ id: 1, email: 'test@mail.com', password: hashedPassWithSalt } as User);
+
         const user = await service.signin('test@mail.com', 'mypassword');
         expect(user).toBeDefined();
+        const [salt2, hash2] = user.password.split('.');
+        expect(salt2).toBeDefined();
+        expect(hash2).toBeDefined();
     });
 
 

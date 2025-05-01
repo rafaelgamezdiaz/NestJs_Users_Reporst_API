@@ -41,3 +41,38 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+
+
+### Si al ejecutar los tests unitario da error con el Serialize, modificar la configuracion en el package.json:
+
+  ```
+  "jest": {
+      "moduleFileExtensions": [
+        "js",
+        "json",
+        "ts"
+      ],
+      "rootDir": "src",
+      "testRegex": ".*\\.spec\\.ts$",
+      "transform": {
+        "^.+\\.(t|j)s$": "ts-jest"
+      },
+      "collectCoverageFrom": [
+        "**/*.(t|j)s"
+      ],
+      "coverageDirectory": "../coverage",
+      "testEnvironment": "node",
+      "moduleNameMapper": {
+        "^src/(.*)$": "<rootDir>/$1"
+      }
+    }
+  ```
+
+
+  ## Configuracion
+
+  ``` npm install @nestjs/config ```
+
+  Para establecer la variable de entorno NODE_ENV
+
+    ``` npm install cross-env ```
