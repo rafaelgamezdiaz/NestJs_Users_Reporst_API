@@ -1,0 +1,36 @@
+### Register a Report
+POST http://localhost:3000/reports
+content-type: application/json
+
+{
+    "price": 2650,
+    "make": "Mercedes",
+    "model": "M01s458",
+    "year": 2020,
+    "lng": "-122.4194", 
+    "lat": "38.7749", 
+    "mileage":2100
+}
+
+
+
+### Update a Report Approval
+PATCH http://localhost:3000/reports/5
+content-type: application/json
+
+{
+    "approved": true
+}
+
+
+
+### Get Estimated Price
+GET http://localhost:3000/reports?make=mercedes&model=M01s458&year=2017&lng=-122.4194&lat=37.7749&mileage=2234
+content-type: application/json
+
+
+
+### Get All
+GET http://localhost:3000/reports/all/reports
+content-type: application/json
+
