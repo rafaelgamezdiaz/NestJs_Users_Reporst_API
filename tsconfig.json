@@ -1,3 +1,24 @@
+// {
+//   "compilerOptions": {
+//     "module": "commonjs",
+//     "declaration": true,
+//     "removeComments": true,
+//     "emitDecoratorMetadata": true,
+//     "experimentalDecorators": true,
+//     "allowSyntheticDefaultImports": true,
+//     "target": "ES2023",
+//     "sourceMap": true,
+//     "outDir": "./dist",
+//     "baseUrl": "./",
+//     "incremental": true,
+//     "skipLibCheck": true,
+//     "strictNullChecks": true,
+//     "forceConsistentCasingInFileNames": true,
+//     "noImplicitAny": false,
+//     "strictBindCallApply": false,
+//     "noFallthroughCasesInSwitch": false
+//   }
+// }
 {
   "compilerOptions": {
     "module": "commonjs",
@@ -9,13 +30,30 @@
     "target": "ES2023",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./",
+    "baseUrl": "./", // Mantenlo, es útil para la resolución base
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
     "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false
-  }
+    "noFallthroughCasesInSwitch": false,
+    // --- Opcional pero recomendado ---
+    // "rootDir": "./src" // Descomenta si todos tus fuentes están estrictamente dentro de src
+    // Puede ayudar a asegurar que la estructura en dist refleje la de src.
+    // Si tienes archivos TS fuera de src, no lo uses o ajústalo.
+  },
+  // --- Añadido: Especifica explícitamente qué incluir ---
+  "include": [
+    "src/**/*" // Incluye todos los archivos dentro de la carpeta src
+    // Puedes añadir más patrones si tienes archivos TS relevantes fuera de src
+    // "test/**/*" // Si quieres incluir archivos de test en la compilación (usualmente no necesario para la app principal)
+  ],
+  // --- Añadido: Especifica qué excluir de la compilación ---
+  "exclude": [
+    "node_modules", // Siempre excluye node_modules
+    "dist", // Excluye el directorio de salida
+    "test", // Usualmente excluyes la carpeta de tests (a menos que uses include arriba)
+    "**/*.spec.ts" // Excluye archivos de especificaciones (tests unitarios)
+  ]
 }
